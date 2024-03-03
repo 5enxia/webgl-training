@@ -25,25 +25,40 @@ onMounted(() => {
     alert('プログラムオブジェクトの作成に失敗しました');
     return;
   };
-  let attLocation = gl.getAttribLocation(prg, 'position');
-  if (attLocation == undefined || attLocation == -1) {
-    alert('attLocationの格納場所の取得に失敗しました');
-    return;
-  }
-  var attStride = 3;
+  var attLocations = [
+    gl.getAttribLocation(prg, 'position'),
+    gl.getAttribLocation(prg, 'color')
+  ]
+  attLocations.forEach((location, index) => {
+    if (location == undefined || location == -1) {
+      alert(`attLocations[${index}]の取得に失敗しました`);
+      return;
+    }
+  })
+  var attStrides = [3, 4];
   var vertexPosition = [
     0.0, 1.0, 0.0,
     1.0, 0.0, 0.0,
     -1.0, 0.0, 0.0
   ];
-  const vbo = WebGL.createVBO(gl, vertexPosition);
-  if (!vbo) {
-    alert('VBOの作成に失敗しました');
-    return;
-  }
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.enableVertexAttribArray(attLocation);
-  gl.vertexAttribPointer(attLocation, attStride, gl.FLOAT, false, 0, 0);
+  var vertexColor = [
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0
+  ]
+  var vbos = [
+    WebGL.createVBO(gl, vertexPosition),
+    WebGL.createVBO(gl, vertexColor)
+  ];
+  vbos.forEach((vbo, index) => {
+    if (!vbo) {
+      alert(`vbos[${index}]の作成に失敗しました`);
+      return;
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.enableVertexAttribArray(attLocations[index]);
+    gl.vertexAttribPointer(attLocations[index], attStrides[index], gl.FLOAT, false, 0, 0);
+  });
 
   var m = new matIV();
   // 各種行列の生成と初期化
