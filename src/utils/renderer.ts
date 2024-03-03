@@ -18,7 +18,7 @@ export default class Renderer {
   // params
   public static uniLocations: Array<WebGLUniformLocation | null> = [];
   public static startTime: number = 0;
-  public static FPS = 1000 / 30;
+  public static FPS = 30;
   public static tempTime = 0;
 
   // mouse
@@ -72,7 +72,7 @@ export default class Renderer {
     Renderer.update();
     Renderer.draw();
 
-    setTimeout(Renderer.animate, Renderer.FPS);
+    setTimeout(Renderer.animate, 1 / Renderer.FPS);
   }
 
   private static update() {
