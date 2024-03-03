@@ -9,8 +9,8 @@ export default class WebGL {
 
   public static getCanvas(id: string): HTMLCanvasElement | null {
     const canvas = document.getElementById(id) as HTMLCanvasElement;
-    canvas.width = 500;
-    canvas.height = 300;
+    canvas.width = 512;
+    canvas.height = 512;
     return canvas;
   }
 
@@ -56,6 +56,34 @@ export default class WebGL {
     }
   }
 
+  public static createShaderFromSource(
+    gl: WebGL2RenderingContext,
+    source: string,
+    type: "vert" | "frag"
+  ): WebGLShader | undefined {
+    var shader: WebGLShader | null = null;
+    switch (type) {
+      case "vert":
+        shader = gl.createShader(gl.VERTEX_SHADER);
+        break;
+      case "frag":
+        shader = gl.createShader(gl.FRAGMENT_SHADER);
+        break;
+      default:
+        return;
+    }
+    if (!shader) {
+      return;
+    }
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      return shader;
+    } else {
+      alert(gl.getShaderInfoLog(shader));
+    }
+  }
+
   public static createProgram(
     gl: WebGL2RenderingContext,
     vertexShader: WebGLShader,
@@ -88,5 +116,23 @@ export default class WebGL {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     return vbo;
+  }
+
+  public static createIBO(
+    gl: WebGL2RenderingContext,
+    data: number[]
+  ): WebGLBuffer | undefined {
+    var ibo = gl.createBuffer();
+    if (!ibo) {
+      return;
+    }
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+    gl.bufferData(
+      gl.ELEMENT_ARRAY_BUFFER,
+      new Int16Array(data),
+      gl.STATIC_DRAW
+    );
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    return ibo;
   }
 }
