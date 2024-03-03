@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue + TS</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+
+    <script id="vs" type="x-shader/x-vertex">
+      precision highp float;
+      attribute vec3 position;
+      uniform mat4 mvpMatrix;
+
+      void main(void){
+          gl_Position = mvpMatrix * vec4(position, 1.0);
+      }
+    </script>
+    <script id="fs" type="x-shader/x-fragment">
+      void main(){
+          gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      }
+    </script>
+  </body>
+</html>
