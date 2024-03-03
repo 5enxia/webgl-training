@@ -46,6 +46,7 @@ export default class Renderer {
     const position = [
       -1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0,
     ];
+
     // 頂点インデックス
     const index = [0, 2, 1, 1, 2, 3];
     var vPosition = WebGL.createVBO(gl, position);
@@ -58,6 +59,7 @@ export default class Renderer {
     gl.vertexAttribPointer(vAttLocation, 3, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vIndex);
 
+    // Time
     Renderer.startTime = new Date().getTime();
 
     // Events

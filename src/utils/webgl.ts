@@ -1,11 +1,5 @@
 export default class WebGL {
-  // singleton
   private constructor() {}
-  //   public static canvas: HTMLCanvasElement | null = null;
-  //   public static gl: WebGL2RenderingContext | null = null;
-  //   public static shaders: Map<string, WebGLShader> = new Map();
-  //   public static programs: Map<string, WebGLProgram> = new Map();
-  //   public static vbos: Map<string, WebGLBuffer> = new Map();
 
   public static getCanvas(id: string): HTMLCanvasElement | null {
     const canvas = document.getElementById(id) as HTMLCanvasElement;
