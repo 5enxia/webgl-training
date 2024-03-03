@@ -19,7 +19,7 @@ export default class Renderer {
   public static uniLocations: Array<WebGLUniformLocation | null> = [];
   public static startTime: number = 0;
   public static FPS = 30;
-  public static tempTime = 0;
+  public static time = 0;
 
   // mouse
   public static mousePosition: MousePosition = { x: 0, y: 0 };
@@ -59,7 +59,6 @@ export default class Renderer {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vIndex);
 
     Renderer.startTime = new Date().getTime();
-    Renderer.tempTime = 0;
 
     // Events
     Renderer.canvas.addEventListener("mousemove", Renderer.mouseMove);
@@ -76,15 +75,15 @@ export default class Renderer {
   }
 
   private static update() {
+    const now = new Date();
+    Renderer.time = now.getTime() - Renderer.startTime; 
   }
 
   private static draw() {
     const gl = Renderer.gl;
-    const now = new Date();
-    const time = (now.getTime() - Renderer.startTime) * 0.001;
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.uniform1f(Renderer.uniLocations[0], time + Renderer.tempTime);
+    gl.uniform1f(Renderer.uniLocations[0], Renderer.time);
     gl.uniform2fv(Renderer.uniLocations[1], [Renderer.mousePosition.x, Renderer.mousePosition.y]);
     gl.uniform2fv(Renderer.uniLocations[2], [
       Renderer.canvas?.width ?? 0,
