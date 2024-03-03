@@ -129,4 +129,23 @@ export default class WebGL {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     return ibo;
   }
+
+  public static createPlane(gl: WebGL2RenderingContext, prg: WebGLProgram) {
+    // 頂点データ
+    const position = [
+      -1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0,
+    ];
+
+    // 頂点インデックス
+    const index = [0, 2, 1, 1, 2, 3];
+    var vPosition = WebGL.createVBO(gl, position);
+    if (!vPosition) return;
+    var vIndex = WebGL.createIBO(gl, index);
+    if (!vIndex) return;
+    var vAttLocation = gl.getAttribLocation(prg, "position");
+    gl.bindBuffer(gl.ARRAY_BUFFER, vPosition);
+    gl.enableVertexAttribArray(vAttLocation);
+    gl.vertexAttribPointer(vAttLocation, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vIndex);
+  }
 }

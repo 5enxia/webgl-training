@@ -1,7 +1,7 @@
 import WebGL from "./webgl";
 
-import vert from "../assets/shader.vert?raw"
-import frag from "../assets/shader.frag?raw"
+import vert from "../assets/mouse/shader.vert?raw"
+import frag from "../assets/mouse/shader.frag?raw"
 
 interface MousePosition {
   x: number;
@@ -23,6 +23,7 @@ export default class Renderer {
 
   // mouse
   public static mousePosition: MousePosition = { x: 0, y: 0 };
+  public static mouseFlag = false;
 
   // 初期化
   public static init(canvas: HTMLCanvasElement) {
@@ -31,6 +32,9 @@ export default class Renderer {
     const gl = WebGL.createContext(canvas);
     if (!gl) return;
     Renderer.gl = gl;
+
+    // Enable blending
+    Renderer.gl.enable(Renderer.gl.BLEND);
 
     const vs = WebGL.createShaderFromSource(gl, vert, "vert");
     const fs = WebGL.createShaderFromSource(gl, frag, "frag");
@@ -42,28 +46,15 @@ export default class Renderer {
     Renderer.uniLocations[1] = gl.getUniformLocation(prg, "mouse");
     Renderer.uniLocations[2] = gl.getUniformLocation(prg, "resolution");
 
-    // 頂点データ
-    const position = [
-      -1.0, 1.0, 0.0, 1.0, 1.0, 0.0, -1.0, -1.0, 0.0, 1.0, -1.0, 0.0,
-    ];
-
-    // 頂点インデックス
-    const index = [0, 2, 1, 1, 2, 3];
-    var vPosition = WebGL.createVBO(gl, position);
-    if (!vPosition) return;
-    var vIndex = WebGL.createIBO(gl, index);
-    if (!vIndex) return;
-    var vAttLocation = gl.getAttribLocation(prg, "position");
-    gl.bindBuffer(gl.ARRAY_BUFFER, vPosition);
-    gl.enableVertexAttribArray(vAttLocation);
-    gl.vertexAttribPointer(vAttLocation, 3, gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vIndex);
+    WebGL.createPlane(gl, prg);
 
     // Time
     Renderer.startTime = new Date().getTime();
 
     // Events
     Renderer.canvas.addEventListener("mousemove", Renderer.mousemove);
+    Renderer.canvas.addEventListener("mousedown", Renderer.mousedown);
+    Renderer.canvas.addEventListener("mouseleave", Renderer.mouseleave);
 
     // Start animation
     Renderer.animate();
@@ -101,5 +92,13 @@ export default class Renderer {
         x: e.offsetX / Renderer.canvas.width,
         y: e.offsetY / Renderer.canvas.height,
     }
+  }
+
+  private static mousedown(e: MouseEvent) {
+    Renderer.mouseFlag = true
+  }
+
+  private static mouseleave(e: MouseEvent) {
+    Renderer.mouseFlag = false
   }
 }
