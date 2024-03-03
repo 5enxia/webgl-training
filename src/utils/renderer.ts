@@ -36,16 +36,19 @@ export default class Renderer {
     // Enable blending
     Renderer.gl.enable(Renderer.gl.BLEND);
 
+    // Shader
     const vs = WebGL.createShaderFromSource(gl, vert, "vert");
     const fs = WebGL.createShaderFromSource(gl, frag, "frag");
     if (!vs || !fs) return;
     var prg = WebGL.createProgram(gl, vs, fs);
     if (!prg) return;
 
+    // Uniform
     Renderer.uniLocations[0] = gl.getUniformLocation(prg, "time");
     Renderer.uniLocations[1] = gl.getUniformLocation(prg, "mouse");
     Renderer.uniLocations[2] = gl.getUniformLocation(prg, "resolution");
 
+    // Attribute
     WebGL.createPlane(gl, prg);
 
     // Time
@@ -78,10 +81,7 @@ export default class Renderer {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniform1f(Renderer.uniLocations[0], Renderer.time);
     gl.uniform2fv(Renderer.uniLocations[1], [Renderer.mousePosition.x, Renderer.mousePosition.y]);
-    gl.uniform2fv(Renderer.uniLocations[2], [
-      Renderer.canvas?.width ?? 0,
-      Renderer.canvas?.height ?? 0,
-    ]);
+    gl.uniform2fv(Renderer.uniLocations[2], [Renderer.canvas.width, Renderer.canvas.height]);
 
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     gl.flush();
