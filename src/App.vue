@@ -66,6 +66,7 @@ onMounted(() => {
   var vMatrix = m.identity(m.create());
   var pMatrix = m.identity(m.create());
   var mvpMatrix = m.identity(m.create());
+  var tmpMatrix = m.identity(m.create());
 
   // ビュー座標変換行列
   m.lookAt(new Float32Array([0.0, 1.0, 3.0]), new Float32Array([0, 0, 0]), new Float32Array([0, 1, 0]), vMatrix);
@@ -73,19 +74,30 @@ onMounted(() => {
   // プロジェクション座標変換行列
   m.perspective(90, canvas.width / canvas.height, 0.1, 100, pMatrix);
 
-  // 各行列を掛け合わせ座標変換行列を完成させる
-  m.multiply(pMatrix, vMatrix, mvpMatrix);
-  m.multiply(mvpMatrix, mMatrix, mvpMatrix);
-
   // uniformLocationの取得
   var uniLocation = gl.getUniformLocation(prg, 'mvpMatrix');
   if (!uniLocation) {
     alert('uniLocationの取得に失敗しました');
     return;
   };
+
+  // 各行列を掛け合わせ座標変換行列を完成させる
+  m.multiply(pMatrix, vMatrix, tmpMatrix);
+
+  m.translate(mMatrix, new Float32Array([1.5, 0.0, 0.0]), mMatrix);
+  m.multiply(tmpMatrix, mMatrix, mvpMatrix);
+
   // uniformLocationへ座標変換行列を登録
   gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
+  // モデルの描画
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
 
+  m.identity(mMatrix);
+  m.translate(mMatrix, new Float32Array([-1.5, 0.0, 0.0]), mMatrix);
+  m.multiply(tmpMatrix, mMatrix, mvpMatrix);
+  
+  // uniformLocationへ座標変換行列を登録
+  gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
   // モデルの描画
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
