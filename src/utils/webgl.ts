@@ -148,4 +148,16 @@ export default class WebGL {
     gl.vertexAttribPointer(vAttLocation, 3, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vIndex);
   }
+
+  public static createParticle(gl: WebGL2RenderingContext, prg: WebGLProgram, position: number[]): Float32Array {
+    var pAttLocation = gl.getAttribLocation(prg, "position");
+
+    var pointPosition = new Float32Array(position);
+    var vbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.enableVertexAttribArray(pAttLocation);
+    gl.vertexAttribPointer(pAttLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bufferData(gl.ARRAY_BUFFER, pointPosition, gl.DYNAMIC_DRAW);
+    return pointPosition;
+  }
 }

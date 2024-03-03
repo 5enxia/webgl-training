@@ -2,6 +2,7 @@ import WebGL from "./webgl";
 
 import vert from "../assets/mouse/shader.vert?raw"
 import frag from "../assets/mouse/shader.frag?raw"
+import Particle from "./particle";
 
 interface MousePosition {
   x: number;
@@ -48,8 +49,12 @@ export default class Renderer {
     Renderer.uniLocations[1] = gl.getUniformLocation(prg, "mouse");
     Renderer.uniLocations[2] = gl.getUniformLocation(prg, "resolution");
 
+    Renderer.uniLocations[3] = gl.getUniformLocation(prg, "pointSize");
+
     // Attribute
-    WebGL.createPlane(gl, prg);
+    // WebGL.createPlane(gl, prg);
+    Particle.init();
+    Particle.pointPosition = WebGL.createParticle(gl, prg, Particle.position);
 
     // Time
     Renderer.startTime = new Date().getTime();
@@ -57,7 +62,7 @@ export default class Renderer {
     // Events
     Renderer.canvas.addEventListener("mousemove", Renderer.mousemove);
     Renderer.canvas.addEventListener("mousedown", Renderer.mousedown);
-    Renderer.canvas.addEventListener("mouseleave", Renderer.mouseleave);
+    Renderer.canvas.addEventListener("mouseup", Renderer.mouseup);
 
     // Start animation
     Renderer.animate();
@@ -71,26 +76,35 @@ export default class Renderer {
   }
 
   private static update() {
+    // Particle
+    Particle.update(Renderer.mouseFlag, Renderer.mousePosition.x, Renderer.mousePosition.y);
+
     // Time
     Renderer.time = new Date().getTime() - Renderer.startTime; 
   }
 
   private static draw() {
     const gl = Renderer.gl;
-
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
     gl.uniform1f(Renderer.uniLocations[0], Renderer.time);
     gl.uniform2fv(Renderer.uniLocations[1], [Renderer.mousePosition.x, Renderer.mousePosition.y]);
     gl.uniform2fv(Renderer.uniLocations[2], [Renderer.canvas.width, Renderer.canvas.height]);
 
-    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+    gl.uniform1f(Renderer.uniLocations[3], Particle.velocity * 1.25 + 0.25);
+
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, Particle.pointPosition);
+
+    gl.drawArrays(gl.POINTS, 0, Particle.verticesCount);
+    // gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+
     gl.flush();
   }
 
   private static mousemove(e: MouseEvent) {
     Renderer.mousePosition = {
-        x: e.offsetX / Renderer.canvas.width,
-        y: e.offsetY / Renderer.canvas.height,
+        x: e.offsetX / Renderer.canvas.width * 2 - 1,
+        y: e.offsetY / Renderer.canvas.height * -2 + 1,
     }
   }
 
@@ -98,7 +112,7 @@ export default class Renderer {
     Renderer.mouseFlag = true
   }
 
-  private static mouseleave(e: MouseEvent) {
+  private static mouseup(e: MouseEvent) {
     Renderer.mouseFlag = false
   }
 }
