@@ -63,7 +63,7 @@ export default class Renderer {
     Renderer.startTime = new Date().getTime();
 
     // Events
-    Renderer.canvas.addEventListener("mousemove", Renderer.mouseMove);
+    Renderer.canvas.addEventListener("mousemove", Renderer.mousemove);
 
     // Start animation
     Renderer.animate();
@@ -77,8 +77,8 @@ export default class Renderer {
   }
 
   private static update() {
-    const now = new Date();
-    Renderer.time = now.getTime() - Renderer.startTime; 
+    // Time
+    Renderer.time = new Date().getTime() - Renderer.startTime; 
   }
 
   private static draw() {
@@ -96,7 +96,7 @@ export default class Renderer {
     gl.flush();
   }
 
-  private static mouseMove(e: MouseEvent) {
+  private static mousemove(e: MouseEvent) {
     Renderer.mousePosition = {
         x: e.offsetX / Renderer.canvas.width,
         y: e.offsetY / Renderer.canvas.height,
