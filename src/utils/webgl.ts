@@ -10,7 +10,7 @@ export default class WebGL {
 
   public static createContext(
     canvas: HTMLCanvasElement
-  ): WebGL2RenderingContext | undefined {
+  ): WebGL2RenderingContext | null {
     const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
@@ -21,10 +21,10 @@ export default class WebGL {
   public static createShader(
     gl: WebGL2RenderingContext,
     id: string
-  ): WebGLShader | undefined {
+  ): WebGLShader | null {
     const scriptElement = document.getElementById(id) as HTMLScriptElement;
     if (!scriptElement || !(scriptElement instanceof HTMLScriptElement)) {
-      return;
+      return null;
     }
 
     var shader: WebGLShader | null = null;
@@ -36,10 +36,10 @@ export default class WebGL {
         shader = gl.createShader(gl.FRAGMENT_SHADER);
         break;
       default:
-        return;
+        return null;
     }
     if (!shader) {
-      return;
+      return null;
     }
     gl.shaderSource(shader, scriptElement.text);
     gl.compileShader(shader);
@@ -47,6 +47,7 @@ export default class WebGL {
       return shader;
     } else {
       alert(gl.getShaderInfoLog(shader));
+      return null;
     }
   }
 
@@ -54,7 +55,7 @@ export default class WebGL {
     gl: WebGL2RenderingContext,
     source: string,
     type: "vert" | "frag"
-  ): WebGLShader | undefined {
+  ): WebGLShader | null {
     var shader: WebGLShader | null = null;
     switch (type) {
       case "vert":
@@ -64,10 +65,10 @@ export default class WebGL {
         shader = gl.createShader(gl.FRAGMENT_SHADER);
         break;
       default:
-        return;
+        return null;
     }
     if (!shader) {
-      return;
+      return null;
     }
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
@@ -75,6 +76,7 @@ export default class WebGL {
       return shader;
     } else {
       alert(gl.getShaderInfoLog(shader));
+      return null;
     }
   }
 
@@ -82,10 +84,10 @@ export default class WebGL {
     gl: WebGL2RenderingContext,
     vertexShader: WebGLShader,
     fragmentShader: WebGLShader
-  ): WebGLProgram | undefined {
+  ): WebGLProgram | null {
     var program = gl.createProgram();
     if (!program) {
-      return;
+      return null;
     }
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -95,16 +97,39 @@ export default class WebGL {
       return program;
     } else {
       alert(gl.getProgramInfoLog(program));
+      return null;
+    }
+  }
+
+  public static createTransformFeedbackProgram(
+    gl: WebGL2RenderingContext,
+    vs: WebGLShader,
+    fs: WebGLShader,
+    varyings: Iterable<string>
+  ) {
+    var prg = gl.createProgram();
+    if (!prg) {
+      return null;
+    }
+    gl.attachShader(prg, vs);
+    gl.attachShader(prg, fs);
+    gl.transformFeedbackVaryings(prg, varyings, gl.SEPARATE_ATTRIBS);
+    gl.linkProgram(prg);
+    if (gl.getProgramParameter(prg, gl.LINK_STATUS)) {
+      gl.useProgram(prg);
+      return prg;
+    } else {
+      alert(gl.getProgramInfoLog(prg));
     }
   }
 
   public static createVBO(
     gl: WebGL2RenderingContext,
     data: number[]
-  ): WebGLBuffer | undefined {
+  ): WebGLBuffer | null {
     var vbo = gl.createBuffer();
     if (!vbo) {
-      return;
+      return null;
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
@@ -112,13 +137,27 @@ export default class WebGL {
     return vbo;
   }
 
+  public static createTransformFeedbackVBO(
+    gl: WebGL2RenderingContext,
+    data: number[]
+  ): WebGLBuffer | null {
+    var vbo = gl.createBuffer();
+    if (!vbo) {
+      return null;
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.DYNAMIC_COPY);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    return vbo;
+  }
+
   public static createIBO(
     gl: WebGL2RenderingContext,
     data: number[]
-  ): WebGLBuffer | undefined {
+  ): WebGLBuffer | null {
     var ibo = gl.createBuffer();
     if (!ibo) {
-      return;
+      return null;
     }
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
     gl.bufferData(
@@ -139,9 +178,9 @@ export default class WebGL {
     // 頂点インデックス
     const index = [0, 2, 1, 1, 2, 3];
     var vPosition = WebGL.createVBO(gl, position);
-    if (!vPosition) return;
+    if (!vPosition) return null;
     var vIndex = WebGL.createIBO(gl, index);
-    if (!vIndex) return;
+    if (!vIndex) return null;
     var vAttLocation = gl.getAttribLocation(prg, "position");
     gl.bindBuffer(gl.ARRAY_BUFFER, vPosition);
     gl.enableVertexAttribArray(vAttLocation);
@@ -149,7 +188,11 @@ export default class WebGL {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vIndex);
   }
 
-  public static createParticle(gl: WebGL2RenderingContext, prg: WebGLProgram, position: number[]): Float32Array {
+  public static createParticle(
+    gl: WebGL2RenderingContext,
+    prg: WebGLProgram,
+    position: number[]
+  ): Float32Array {
     var pAttLocation = gl.getAttribLocation(prg, "position");
 
     var pointPosition = new Float32Array(position);
@@ -159,5 +202,29 @@ export default class WebGL {
     gl.vertexAttribPointer(pAttLocation, 2, gl.FLOAT, false, 0, 0);
     gl.bufferData(gl.ARRAY_BUFFER, pointPosition, gl.DYNAMIC_DRAW);
     return pointPosition;
+  }
+
+  public static setAttribute(
+    gl: WebGL2RenderingContext,
+    vbo: WebGLBuffer,
+    attL: number,
+    attS: number
+  ) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.enableVertexAttribArray(attL);
+    gl.vertexAttribPointer(attL, attS, gl.FLOAT, false, 0, 0);
+  }
+
+  public static setAttributes(
+    gl: WebGL2RenderingContext,
+    vbos: Array<WebGLBuffer | null>,
+    attLs: number[],
+    attSs: number[]
+  ) {
+    for (let i in vbos) {
+      if (vbos[i] == null) continue;
+      let vbo = vbos[i] as WebGLBuffer;
+      WebGL.setAttribute(gl, vbo, attLs[i], attSs[i]);
+    }
   }
 }
