@@ -134,7 +134,7 @@ export default class Renderer {
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
     gl.uniform1f(Renderer.uniLocation[0], Renderer.time);
     gl.uniform2fv(Renderer.uniLocation[1], [Renderer.mousePosition.x, Renderer.mousePosition.y]);
-    gl.uniform1f(Renderer.uniLocation[2], 0.1);
+    gl.uniform1f(Renderer.uniLocation[2], Renderer.mouseFlag ? 0.1 : 0.01 );
     gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
 
     // transform feedback の終了と設定
