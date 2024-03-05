@@ -16,7 +16,12 @@ export default class Particle {
   // VBO Array
   public static VBOArray: Array<Array<WebGLBuffer | null>>
 
-  public static init(gl: WebGL2RenderingContext) {
+  // Shader
+  private static fprg: WebGLProgram;
+  private static attLocation: Array<number> = [];
+  private static attStride: Array<number> = [];
+
+  public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram, attLocation: Array<number>, attStride: Array<number>) {
     for (let i = 0; i < Particle.resolutionX; i++) {
       for (let j = 0; j < Particle.resolutionY; j++) {
         // 頂点の座標
@@ -43,5 +48,20 @@ export default class Particle {
             WebGL.createVBO(gl, Particle.color),
         ]
     ]
+
+    Particle.fprg = fprg;
+    Particle.attLocation = attLocation;
+    Particle.attStride = attStride;
+  }
+
+  public static draw(gl: WebGL2RenderingContext, invertIndex: number) {
+    // program
+    gl.useProgram(Particle.fprg);
+
+    // set vbo
+    WebGL.setAttributes(gl, Particle.VBOArray[invertIndex], Particle.attLocation, Particle.attStride);
+
+    // push and render
+    gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
   }
 }

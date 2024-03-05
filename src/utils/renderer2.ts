@@ -84,7 +84,7 @@ export default class Renderer {
 
     // Attribute
     // WebGL.createPlane(gl, prg);
-    Particle.init(gl);
+    Particle.init(gl, fprg, Renderer.attLocation, Renderer.attStride);
 
     // Flags
     gl.disable(gl.DEPTH_TEST);
@@ -169,18 +169,10 @@ export default class Renderer {
     // gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     // gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
 
-    // program
-    gl.useProgram(Renderer.fprg);
-
     // Particle
     var countIndex = Renderer.counter % 2;
     var invertIndex = 1 - countIndex;
-
-    // set vbo
-    WebGL.setAttributes(gl, Particle.VBOArray[invertIndex], Renderer.attLocation, Renderer.attStride);
-
-    // push and render
-    gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
+    Particle.draw(gl, invertIndex);
 
     gl.flush();
   }
