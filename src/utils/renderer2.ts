@@ -29,9 +29,6 @@ export default class Renderer {
   public static mousePosition: MousePosition = { x: 0, y: 0 };
   public static mouseFlag = false;
 
-  // VBO
-  public static VBOArray: Array<Array<WebGLBuffer | null>>
-  
   // Shader
   public static cprg: WebGLProgram;
   public static attLocation: Array<number> = [];
@@ -87,19 +84,7 @@ export default class Renderer {
 
     // Attribute
     // WebGL.createPlane(gl, prg);
-    Particle.init();
-    Renderer.VBOArray = [
-        [
-            WebGL.createVBO(gl, Particle.position),
-            WebGL.createVBO(gl, Particle.velocity),
-            WebGL.createVBO(gl, Particle.color),
-        ],
-        [
-            WebGL.createVBO(gl, Particle.position),
-            WebGL.createVBO(gl, Particle.velocity),
-            WebGL.createVBO(gl, Particle.color),
-        ]
-    ]
+    Particle.init(gl);
 
     // Flags
     gl.disable(gl.DEPTH_TEST);
@@ -137,10 +122,10 @@ export default class Renderer {
     gl.useProgram(Renderer.cprg);
 
     // 読み込み用 VBO をバインドし、書き込み用を設定する
-    WebGL.setAttributes(gl, Renderer.VBOArray[countIndex], Renderer.attLocation, Renderer.attStride);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, Renderer.VBOArray[invertIndex][0]);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, Renderer.VBOArray[invertIndex][1]);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, Renderer.VBOArray[invertIndex][2]);
+    WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Renderer.attLocation, Renderer.attStride);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, Particle.VBOArray[invertIndex][0]);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, Particle.VBOArray[invertIndex][1]);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, Particle.VBOArray[invertIndex][2]);
 
     // transform feedback の開始を設定
     gl.enable(gl.RASTERIZER_DISCARD);
@@ -192,7 +177,7 @@ export default class Renderer {
     var invertIndex = 1 - countIndex;
 
     // set vbo
-    WebGL.setAttributes(gl, Renderer.VBOArray[invertIndex], Renderer.attLocation, Renderer.attStride);
+    WebGL.setAttributes(gl, Particle.VBOArray[invertIndex], Renderer.attLocation, Renderer.attStride);
 
     // push and render
     gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);

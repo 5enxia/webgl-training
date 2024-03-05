@@ -1,3 +1,5 @@
+import WebGL from "./webgl";
+
 export default class Particle {
   private constructor() {}
 
@@ -12,9 +14,9 @@ export default class Particle {
   public static intervalY = 1.0 / Particle.resolutionY; // 頂点間の間隔Y
 
   // VBO Array
-  public static VBOArray: number[][] = []
+  public static VBOArray: Array<Array<WebGLBuffer | null>>
 
-  public static init() {
+  public static init(gl: WebGL2RenderingContext) {
     for (let i = 0; i < Particle.resolutionX; i++) {
       for (let j = 0; j < Particle.resolutionY; j++) {
         // 頂点の座標
@@ -27,5 +29,19 @@ export default class Particle {
         Particle.color.push(1.0, 1.0, 1.0, 1.0); // 頂点の色
       }
     }
+
+    // VBO Array
+    Particle.VBOArray = [
+        [
+            WebGL.createVBO(gl, Particle.position),
+            WebGL.createVBO(gl, Particle.velocity),
+            WebGL.createVBO(gl, Particle.color),
+        ],
+        [
+            WebGL.createVBO(gl, Particle.position),
+            WebGL.createVBO(gl, Particle.velocity),
+            WebGL.createVBO(gl, Particle.color),
+        ]
+    ]
   }
 }
