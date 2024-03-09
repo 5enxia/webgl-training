@@ -112,15 +112,12 @@ export default class Renderer {
     const gl = Renderer.gl;
 
     // Particle
-    var countIndex = Renderer.counter % 2;
-    var invertIndex = 1 - countIndex;
 
     // transform feedback で VBO を更新するシェーダ
     gl.useProgram(Renderer.cprg);
 
     // 読み込み用 VBO をバインドし、書き込み用を設定する
-    WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Particle.attLocation, Particle.attStride);
-    Particle.beginFeedback(gl, invertIndex);
+    Particle.beginFeedback(gl, Renderer.counter);
 
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
     Particle.update(gl, Renderer.time, Renderer.mousePosition, Renderer.mouseFlag);

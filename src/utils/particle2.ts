@@ -54,7 +54,12 @@ export default class Particle {
     Particle.fprg = fprg;
   }
 
-  public static beginFeedback(gl: WebGL2RenderingContext, invertIndex: number) {
+  public static beginFeedback(gl: WebGL2RenderingContext, counter: number) {
+    let countIndex = counter % 2;
+    let invertIndex = 1 - countIndex;
+
+    WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Particle.attLocation, Particle.attStride);
+
     gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, Particle.VBOArray[invertIndex][0]);
     gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, Particle.VBOArray[invertIndex][1]);
     gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, Particle.VBOArray[invertIndex][2]);
