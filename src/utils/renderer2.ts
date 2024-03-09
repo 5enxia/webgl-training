@@ -31,7 +31,6 @@ export default class Renderer {
 
   // Shader
   public static cprg: WebGLProgram;
-
   public static fprg: WebGLProgram;
 
   // 初期化
@@ -111,8 +110,6 @@ export default class Renderer {
   private static update() {
     const gl = Renderer.gl;
 
-    // Particle
-
     // transform feedback で VBO を更新するシェーダ
     gl.useProgram(Renderer.cprg);
 
@@ -121,16 +118,13 @@ export default class Renderer {
 
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
     Particle.update(gl, Renderer.time, Renderer.mousePosition, Renderer.mouseFlag);
-
-    // transform feedback の終了と設定
-    Particle.endFeedback(gl);
+    Particle.endFeedback(gl); // transform feedback の終了と設定
 
     // Counter
     Renderer.counter++;
 
     // Time
     Renderer.time = new Date().getTime() - Renderer.startTime; 
-
   }
 
   private static draw() {
