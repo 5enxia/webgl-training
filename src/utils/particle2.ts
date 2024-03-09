@@ -1,8 +1,8 @@
 import WebGL from "./webgl";
 import type { MousePosition } from "./renderer2";
 
-import cvert from "../assets/particle/compute.vert?raw"
-import cfrag from "../assets/particle/compute.frag?raw"
+import cvert from "../shaders/particle/compute.vert?raw"
+import cfrag from "../shaders/particle/compute.frag?raw"
 
 export default class Particle {
   private constructor() {}

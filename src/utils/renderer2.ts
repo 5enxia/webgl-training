@@ -1,7 +1,7 @@
 import WebGL from "./webgl";
 
-import fvert from "../assets/particle/shader.vert?raw"
-import ffrag from "../assets/particle/shader.frag?raw"
+import fvert from "../shaders/particle/shader.vert?raw"
+import ffrag from "../shaders/particle/shader.frag?raw"
 import Particle from "./particle2";
 
 export interface MousePosition {
