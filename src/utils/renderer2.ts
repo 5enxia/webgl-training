@@ -50,6 +50,7 @@ export default class Renderer {
     if (!fprg) return;
     Renderer.fprg = fprg;
 
+    // Particle
     Particle.init(gl, fprg);
 
     // Flags
