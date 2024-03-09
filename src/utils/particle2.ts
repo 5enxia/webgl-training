@@ -76,7 +76,8 @@ export default class Particle {
     Particle.fprg = fprg;
   }
 
-  private static beginFeedback(gl: WebGL2RenderingContext, counter: number) {
+  // uniform 変数などを設定して描画処理を行い VBO に書き込む
+  public static update(gl: WebGL2RenderingContext, counter: number, time: number, mousePosition: MousePosition, mouseFlag: boolean) {
     let countIndex = counter % 2;
     let invertIndex = 1 - countIndex;
 
@@ -92,11 +93,6 @@ export default class Particle {
     // transform feedback の開始を設定
     gl.enable(gl.RASTERIZER_DISCARD);
     gl.beginTransformFeedback(gl.POINTS);
-  }
-
-  // uniform 変数などを設定して描画処理を行い VBO に書き込む
-  public static update(gl: WebGL2RenderingContext, counter: number, time: number, mousePosition: MousePosition, mouseFlag: boolean) {
-    this.beginFeedback(gl, counter);
 
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
     gl.uniform1f(Particle.uniLocation[0], time);
@@ -104,10 +100,6 @@ export default class Particle {
     gl.uniform1f(Particle.uniLocation[2], mouseFlag ? 0.1 : 0.01 );
     gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
 
-    this.endFeedback(gl);
-  }
-
-  private static endFeedback(gl: WebGL2RenderingContext) {
     // transform feedback の終了と設定
     gl.disable(gl.RASTERIZER_DISCARD);
     gl.endTransformFeedback();
