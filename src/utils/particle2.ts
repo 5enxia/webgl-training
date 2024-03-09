@@ -21,7 +21,7 @@ export default class Particle {
   public static attLocation: Array<number> = [];
   public static attStride: Array<number> = [];
 
-  public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram, attStride: Array<number>) {
+  public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram) {
     for (let i = 0; i < Particle.resolutionX; i++) {
       for (let j = 0; j < Particle.resolutionY; j++) {
         // 頂点の座標
@@ -50,7 +50,6 @@ export default class Particle {
     ]
 
     Particle.fprg = fprg;
-    Particle.attStride = attStride;
   }
 
   public static beginFeedback(gl: WebGL2RenderingContext, invertIndex: number) {
