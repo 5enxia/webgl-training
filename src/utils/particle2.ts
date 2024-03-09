@@ -20,6 +20,7 @@ export default class Particle {
   private static fprg: WebGLProgram;
   public static attLocation: Array<number> = [];
   public static attStride: Array<number> = [];
+  public static uniLocation: Array<WebGLUniformLocation | null> = [];
 
   public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram) {
     for (let i = 0; i < Particle.resolutionX; i++) {
