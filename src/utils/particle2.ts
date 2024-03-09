@@ -81,7 +81,10 @@ export default class Particle {
     gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, null);
   }
 
-  public static draw(gl: WebGL2RenderingContext, invertIndex: number) {
+  public static draw(gl: WebGL2RenderingContext, counter: number) {
+    let countIndex = counter % 2;
+    let invertIndex = 1 - countIndex;
+
     // program
     gl.useProgram(Particle.fprg);
 

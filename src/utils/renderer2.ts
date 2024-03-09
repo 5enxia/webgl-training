@@ -147,9 +147,7 @@ export default class Renderer {
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     // Particle
-    var countIndex = Renderer.counter % 2;
-    var invertIndex = 1 - countIndex;
-    Particle.draw(gl, invertIndex);
+    Particle.draw(gl, Renderer.counter);
 
     gl.flush();
   }
