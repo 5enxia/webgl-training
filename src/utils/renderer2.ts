@@ -87,13 +87,9 @@ export default class Renderer {
 
   private static update() {
     const gl = Renderer.gl;
-
-    // 読み込み用 VBO をバインドし、書き込み用を設定する
-    Particle.beginFeedback(gl, Renderer.counter);
-
-    // uniform 変数などを設定して描画処理を行い VBO に書き込む
-    Particle.update(gl, Renderer.time, Renderer.mousePosition, Renderer.mouseFlag);
-    Particle.endFeedback(gl); // transform feedback の終了と設定
+    
+    // Particle
+    Particle.update(gl, Renderer.counter, Renderer.time, Renderer.mousePosition, Renderer.mouseFlag);
 
     // Counter
     Renderer.counter++;
