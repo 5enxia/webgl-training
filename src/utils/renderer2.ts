@@ -6,7 +6,7 @@ import cvert from "../assets/particle/compute.vert?raw"
 import cfrag from "../assets/particle/compute.frag?raw"
 import Particle from "./particle2";
 
-interface MousePosition {
+export interface MousePosition {
   x: number;
   y: number;
 }
@@ -123,10 +123,7 @@ export default class Renderer {
     Particle.beginFeedback(gl, invertIndex);
 
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
-    gl.uniform1f(Particle.uniLocation[0], Renderer.time);
-    gl.uniform2fv(Particle.uniLocation[1], [Renderer.mousePosition.x, Renderer.mousePosition.y]);
-    gl.uniform1f(Particle.uniLocation[2], Renderer.mouseFlag ? 0.1 : 0.01 );
-    gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
+    Particle.update(gl, Renderer.time, Renderer.mousePosition, Renderer.mouseFlag);
 
     // transform feedback の終了と設定
     Particle.endFeedback(gl);

@@ -1,4 +1,5 @@
 import WebGL from "./webgl";
+import type { MousePosition } from "./renderer2";
 
 export default class Particle {
   private constructor() {}
@@ -61,6 +62,14 @@ export default class Particle {
     // transform feedback の開始を設定
     gl.enable(gl.RASTERIZER_DISCARD);
     gl.beginTransformFeedback(gl.POINTS);
+  }
+
+  public static update(gl: WebGL2RenderingContext, time: number, mousePosition: MousePosition, mouseFlag: boolean) {
+    // uniform 変数などを設定して描画処理を行い VBO に書き込む
+    gl.uniform1f(Particle.uniLocation[0], time);
+    gl.uniform2fv(Particle.uniLocation[1], [mousePosition.x, mousePosition.y]);
+    gl.uniform1f(Particle.uniLocation[2], mouseFlag ? 0.1 : 0.01 );
+    gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
   }
 
   public static endFeedback(gl: WebGL2RenderingContext) {
