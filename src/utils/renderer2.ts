@@ -17,7 +17,6 @@ export default class Renderer {
   public static gl: WebGL2RenderingContext;
 
   // params
-  public static uniLocations: Array<WebGLUniformLocation | null> = [];
   public static startTime: number = 0;
   public static FPS = 30;
   public static time = 0;
@@ -51,13 +50,6 @@ export default class Renderer {
     if (!fprg) return;
     Renderer.fprg = fprg;
 
-    // Uniforms
-    Renderer.uniLocations[0] = gl.getUniformLocation(fprg, "time");
-    Renderer.uniLocations[1] = gl.getUniformLocation(fprg, "mouse");
-    Renderer.uniLocations[2] = gl.getUniformLocation(fprg, "resolution");
-
-    // Attribute
-    // WebGL.createPlane(gl, prg);
     Particle.init(gl, fprg);
 
     // Flags
