@@ -31,7 +31,6 @@ export default class Renderer {
 
   // Shader
   public static cprg: WebGLProgram;
-  public static attLocation: Array<number> = [];
   public static attStride: Array<number> = [];
   public static uniLocation: Array<WebGLUniformLocation | null> = [];
 
@@ -61,7 +60,7 @@ export default class Renderer {
     if (!cprg) return;
     Renderer.cprg = cprg;
 
-    Renderer.attLocation = [0, 1, 2]
+    Particle.attLocation = [0, 1, 2];
     Renderer.attStride = [3, 3, 4]
     Renderer.uniLocation = [
       gl.getUniformLocation(cprg, 'time'),
@@ -84,7 +83,7 @@ export default class Renderer {
 
     // Attribute
     // WebGL.createPlane(gl, prg);
-    Particle.init(gl, fprg, Renderer.attLocation, Renderer.attStride);
+    Particle.init(gl, fprg, Renderer.attStride);
 
     // Flags
     gl.disable(gl.DEPTH_TEST);
@@ -122,7 +121,7 @@ export default class Renderer {
     gl.useProgram(Renderer.cprg);
 
     // 読み込み用 VBO をバインドし、書き込み用を設定する
-    WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Renderer.attLocation, Renderer.attStride);
+    WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Particle.attLocation, Renderer.attStride);
     Particle.beginFeedback(gl, invertIndex);
 
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
@@ -151,13 +150,6 @@ export default class Renderer {
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
-
-    // Output
-    // gl.uniform1f(Renderer.uniLocations[0], Renderer.time);
-    // gl.uniform2fv(Renderer.uniLocations[1], [Renderer.mousePosition.x, Renderer.mousePosition.y]);
-    // gl.uniform2fv(Renderer.uniLocations[2], [Renderer.canvas.width, Renderer.canvas.height]);
-    // gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-    // gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
 
     // Particle
     var countIndex = Renderer.counter % 2;

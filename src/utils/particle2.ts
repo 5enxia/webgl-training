@@ -18,10 +18,10 @@ export default class Particle {
 
   // Shader
   private static fprg: WebGLProgram;
-  private static attLocation: Array<number> = [];
-  private static attStride: Array<number> = [];
+  public static attLocation: Array<number> = [];
+  public static attStride: Array<number> = [];
 
-  public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram, attLocation: Array<number>, attStride: Array<number>) {
+  public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram, attStride: Array<number>) {
     for (let i = 0; i < Particle.resolutionX; i++) {
       for (let j = 0; j < Particle.resolutionY; j++) {
         // 頂点の座標
@@ -50,7 +50,6 @@ export default class Particle {
     ]
 
     Particle.fprg = fprg;
-    Particle.attLocation = attLocation;
     Particle.attStride = attStride;
   }
 
