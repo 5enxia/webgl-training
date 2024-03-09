@@ -123,13 +123,7 @@ export default class Renderer {
 
     // 読み込み用 VBO をバインドし、書き込み用を設定する
     WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Renderer.attLocation, Renderer.attStride);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, Particle.VBOArray[invertIndex][0]);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, Particle.VBOArray[invertIndex][1]);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, Particle.VBOArray[invertIndex][2]);
-
-    // transform feedback の開始を設定
-    gl.enable(gl.RASTERIZER_DISCARD);
-    gl.beginTransformFeedback(gl.POINTS);
+    Particle.beginFeedback(gl, invertIndex);
 
     // uniform 変数などを設定して描画処理を行い VBO に書き込む
     gl.uniform1f(Renderer.uniLocation[0], Renderer.time);
@@ -138,11 +132,7 @@ export default class Renderer {
     gl.drawArrays(gl.POINTS, 0, Particle.resolutionX * Particle.resolutionY);
 
     // transform feedback の終了と設定
-    gl.disable(gl.RASTERIZER_DISCARD);
-    gl.endTransformFeedback();
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, null);
-    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, null);
+    Particle.endFeedback(gl);
 
     // Counter
     Renderer.counter++;

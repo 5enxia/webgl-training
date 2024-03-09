@@ -54,6 +54,25 @@ export default class Particle {
     Particle.attStride = attStride;
   }
 
+  public static beginFeedback(gl: WebGL2RenderingContext, invertIndex: number) {
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, Particle.VBOArray[invertIndex][0]);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, Particle.VBOArray[invertIndex][1]);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, Particle.VBOArray[invertIndex][2]);
+
+    // transform feedback の開始を設定
+    gl.enable(gl.RASTERIZER_DISCARD);
+    gl.beginTransformFeedback(gl.POINTS);
+  }
+
+  public static endFeedback(gl: WebGL2RenderingContext) {
+    // transform feedback の終了と設定
+    gl.disable(gl.RASTERIZER_DISCARD);
+    gl.endTransformFeedback();
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, null);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 2, null);
+  }
+
   public static draw(gl: WebGL2RenderingContext, invertIndex: number) {
     // program
     gl.useProgram(Particle.fprg);
