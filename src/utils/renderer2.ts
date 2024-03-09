@@ -2,8 +2,6 @@ import WebGL from "./webgl";
 
 import fvert from "../assets/particle/shader.vert?raw"
 import ffrag from "../assets/particle/shader.frag?raw"
-import cvert from "../assets/particle/compute.vert?raw"
-import cfrag from "../assets/particle/compute.frag?raw"
 import Particle from "./particle2";
 
 export interface MousePosition {
@@ -30,7 +28,6 @@ export default class Renderer {
   public static mouseFlag = false;
 
   // Shader
-  public static cprg: WebGLProgram;
   public static fprg: WebGLProgram;
 
   // 初期化
@@ -45,25 +42,6 @@ export default class Renderer {
     // transform feedback object
     var transformFeedback = gl.createTransformFeedback();
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
-
-    // out variable names
-    var outVaryings = ['vPosition', 'vVelocity', 'vColor'];
-
-    // transform out shader
-    var cvs = WebGL.createShaderFromSource(gl, cvert, "vert");
-    var cfs = WebGL.createShaderFromSource(gl, cfrag, "frag");
-    if (!cvs || !cfs) return;
-    var cprg = WebGL.createTransformFeedbackProgram(gl, cvs, cfs, outVaryings);
-    if (!cprg) return;
-    Renderer.cprg = cprg;
-
-    Particle.attLocation = [0, 1, 2];
-    Particle.attStride = [3, 3, 4]
-    Particle.uniLocation = [
-      gl.getUniformLocation(cprg, 'time'),
-      gl.getUniformLocation(cprg, 'mouse'),
-      gl.getUniformLocation(cprg, 'move')
-    ];
 
     // draw shader
     const fvs = WebGL.createShaderFromSource(gl, fvert, "vert");
@@ -109,9 +87,6 @@ export default class Renderer {
 
   private static update() {
     const gl = Renderer.gl;
-
-    // transform feedback で VBO を更新するシェーダ
-    gl.useProgram(Renderer.cprg);
 
     // 読み込み用 VBO をバインドし、書き込み用を設定する
     Particle.beginFeedback(gl, Renderer.counter);

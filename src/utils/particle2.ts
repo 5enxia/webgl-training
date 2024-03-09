@@ -1,6 +1,9 @@
 import WebGL from "./webgl";
 import type { MousePosition } from "./renderer2";
 
+import cvert from "../assets/particle/compute.vert?raw"
+import cfrag from "../assets/particle/compute.frag?raw"
+
 export default class Particle {
   private constructor() {}
 
@@ -18,12 +21,31 @@ export default class Particle {
   public static VBOArray: Array<Array<WebGLBuffer | null>>
 
   // Shader
+  private static cprg: WebGLProgram;
   private static fprg: WebGLProgram;
   public static attLocation: Array<number> = [];
   public static attStride: Array<number> = [];
   public static uniLocation: Array<WebGLUniformLocation | null> = [];
 
   public static init(gl: WebGL2RenderingContext, fprg: WebGLProgram) {
+    // out variable names
+    var outVaryings = ['vPosition', 'vVelocity', 'vColor'];
+    // transform out shader
+    var cvs = WebGL.createShaderFromSource(gl, cvert, "vert");
+    var cfs = WebGL.createShaderFromSource(gl, cfrag, "frag");
+    if (!cvs || !cfs) return;
+    var cprg = WebGL.createTransformFeedbackProgram(gl, cvs, cfs, outVaryings);
+    if (!cprg) return;
+    Particle.cprg = cprg;
+
+    Particle.attLocation = [0, 1, 2];
+    Particle.attStride = [3, 3, 4]
+    Particle.uniLocation = [
+      gl.getUniformLocation(cprg, 'time'),
+      gl.getUniformLocation(cprg, 'mouse'),
+      gl.getUniformLocation(cprg, 'move')
+    ];
+
     for (let i = 0; i < Particle.resolutionX; i++) {
       for (let j = 0; j < Particle.resolutionY; j++) {
         // 頂点の座標
@@ -57,6 +79,9 @@ export default class Particle {
   public static beginFeedback(gl: WebGL2RenderingContext, counter: number) {
     let countIndex = counter % 2;
     let invertIndex = 1 - countIndex;
+
+    // transform feedback で VBO を更新するシェーダ
+    gl.useProgram(Particle.cprg);
 
     WebGL.setAttributes(gl, Particle.VBOArray[countIndex], Particle.attLocation, Particle.attStride);
 
