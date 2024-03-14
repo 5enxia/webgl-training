@@ -23,6 +23,7 @@ export default class Renderer {
 
   // mouse
   public static mousePosition: MousePosition = { x: 0, y: 0 };
+  public static preMousePosition: MousePosition = { x: 0, y: 0 };
   public static mouseFlag = false;
 
   // Shader
@@ -98,6 +99,8 @@ export default class Renderer {
   }
 
   private static mousemove(e: MouseEvent) {
+    // clone previous mouse position
+    Renderer.preMousePosition = structuredClone(Renderer.mousePosition);
     Renderer.mousePosition = {
         x: e.offsetX / Renderer.canvas.width * 2 - 1,
         y: e.offsetY / Renderer.canvas.height * -2 + 1,
