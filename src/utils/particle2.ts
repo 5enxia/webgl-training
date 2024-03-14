@@ -39,7 +39,7 @@ export default class Particle {
     Particle.cprg = cprg;
 
     Particle.attLocation = [0, 1, 2];
-    Particle.attStride = [3, 3, 4]
+    Particle.attStride = [2, 2, 4]
     Particle.uniLocation = [
       gl.getUniformLocation(cprg, 'time'),
       gl.getUniformLocation(cprg, 'mouse'),
@@ -52,9 +52,11 @@ export default class Particle {
         let x = i * Particle.intervalX * 2.0 - 1.0;
         let y = j * Particle.intervalY * 2.0 - 1.0;
 
-        Particle.position.push(x, -y, 0); // 頂点の座標
+        // Particle.position.push(x, -y, 0); // 頂点の座標
+        Particle.position.push(x, -y); // 頂点の座標
         let m = Math.sqrt(x * x + y * y);
-        Particle.velocity.push(x / m, -y / m, 0); // 頂点のベクトル
+        // Particle.velocity.push(x / m, -y / m, 0); // 頂点のベクトル
+        Particle.velocity.push(x / m, -y / m); // 頂点のベクトル
         Particle.color.push(1.0, 1.0, 1.0, 1.0); // 頂点の色
       }
     }
