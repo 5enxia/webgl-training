@@ -1,7 +1,8 @@
 import WebGL from "./webgl";
 
-import fvert from "../shaders/output/shader.vert?raw"
-import ffrag from "../shaders/output/shader.frag?raw"
+import fvert from "../shaders/externalForce/shader.vert?raw"
+import ffrag from "../shaders/externalForce/shader.frag?raw"
+import ExternalForce from "./externalForce";
 
 export interface MousePosition {
   x: number;
@@ -17,7 +18,7 @@ export default class Renderer {
 
   // params
   public static startTime: number = 0;
-  public static FPS = 30;
+  public static FPS = 10;
   public static time = 0;
   public static counter = 0;
 
@@ -61,6 +62,10 @@ export default class Renderer {
     canvas.addEventListener("mousedown", Renderer.mousedown);
     canvas.addEventListener("mouseup", Renderer.mouseup);
 
+    // Simulation
+    // 外力
+    ExternalForce.init(gl, fprg);
+
     // Time
     Renderer.startTime = new Date().getTime();
 
@@ -78,6 +83,10 @@ export default class Renderer {
   private static update() {
     const gl = Renderer.gl;
 
+    // Simulation
+    // 外力
+    ExternalForce.update(gl, Renderer.counter, Renderer.mousePosition, Renderer.mouseFlag);
+
     // Counter
     Renderer.counter++;
 
@@ -94,6 +103,10 @@ export default class Renderer {
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
+
+    // Simulation
+    // 外力
+    ExternalForce.draw(gl, Renderer.counter);
 
     gl.flush();
   }
