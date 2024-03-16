@@ -1,3 +1,9 @@
+interface FboObject {
+  frameBuffer: WebGLFramebuffer;
+  depthRenderBuffer: WebGLRenderbuffer;
+  fTexture: WebGLTexture;
+}
+
 export default class WebGL {
   private constructor() {}
 
@@ -226,5 +232,94 @@ export default class WebGL {
       let vbo = vbos[i] as WebGLBuffer;
       WebGL.setAttribute(gl, vbo, attLs[i], attSs[i]);
     }
+  }
+
+  // fbo
+  // フレームバッファをオブジェクトとして生成する関数
+  public static createFramebuffer(
+    gl: WebGL2RenderingContext,
+    width: number,
+    height: number
+  ): FboObject | null {
+    // フレームバッファの生成
+    var frameBuffer = gl.createFramebuffer();
+    if (!frameBuffer) {
+      return null;
+    }
+
+    // フレームバッファをWebGLにバインド
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+
+    // 深度バッファ用レンダーバッファの生成とバインド
+    var depthRenderBuffer = gl.createRenderbuffer();
+    if (!depthRenderBuffer) {
+      return null;
+    }
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthRenderBuffer);
+
+    // レンダーバッファを深度バッファとして設定
+    gl.renderbufferStorage(
+      gl.RENDERBUFFER,
+      gl.DEPTH_COMPONENT16,
+      width,
+      height
+    );
+
+    // フレームバッファにレンダーバッファを関連付ける
+    gl.framebufferRenderbuffer(
+      gl.FRAMEBUFFER,
+      gl.DEPTH_ATTACHMENT,
+      gl.RENDERBUFFER,
+      depthRenderBuffer
+    );
+
+    // フレームバッファ用テクスチャの生成
+    var fTexture = gl.createTexture();
+    if (!fTexture) {
+      return null;
+    }
+
+    // フレームバッファ用のテクスチャをバインド
+    gl.bindTexture(gl.TEXTURE_2D, fTexture);
+
+    // フレームバッファ用のテクスチャにカラー用のメモリ領域を確保
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      width,
+      height,
+      0,
+      gl.RGBA,
+      gl.FLOAT,
+      null
+    );
+
+    // テクスチャパラメータ
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // フレームバッファにテクスチャを関連付ける
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      fTexture,
+      0
+    );
+
+    // 各種オブジェクトのバインドを解除
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    // オブジェクトを返して終了
+    return {
+      frameBuffer,
+      depthRenderBuffer,
+      fTexture,
+    };
   }
 }
