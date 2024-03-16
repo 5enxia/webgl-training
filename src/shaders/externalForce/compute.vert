@@ -11,7 +11,8 @@ out vec2 vVelocity;
 
 void main() {
     vPosition = position;
-    vec2 p = mouse - position;
-    vVelocity = normalize(velocity + p * force);
-    // vVelocity = normalize(velocity + p);
+    // vec2 p = mouse - position;
+    // vVelocity = normalize(velocity + p * force);
+    float p = 1.0 - min(length(mouse - position), 1.0);
+    vVelocity = vec2(p) * force;
 }
