@@ -63,7 +63,7 @@ export default class ExternalForce {
   }
 
   // uniform 変数などを設定して描画処理を行い VBO に書き込む
-  public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement,mousePosition: MousePosition, mouseFlag: boolean) {
+  public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement,mousePosition: MousePosition, mouseDiff: MousePosition) {
     gl.useProgram(ExternalForce.prg);
 
     if (!ExternalForce.fbo) return;
@@ -78,7 +78,7 @@ export default class ExternalForce {
     WebGL.setAttributes(gl, ExternalForce.VBOArray, ExternalForce.attLocation, ExternalForce.attStride);
 
     gl.uniform2fv(ExternalForce.uniLocation[0], [mousePosition.x, mousePosition.y]);
-    gl.uniform1f(ExternalForce.uniLocation[1], mouseFlag ? 1 : 0.1 );
+    gl.uniform2fv(ExternalForce.uniLocation[1], [mouseDiff.x, mouseDiff.y]);
     gl.drawArrays(gl.POINTS, 0, ExternalForce.resolutionX * ExternalForce.resolutionY);
 
     // フレームバッファのバインドを解除

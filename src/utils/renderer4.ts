@@ -25,6 +25,7 @@ export default class Renderer {
   // mouse
   public static mousePosition: MousePosition = { x: 0, y: 0 };
   public static preMousePosition: MousePosition = { x: 0, y: 0 };
+  public static mouseDiff: MousePosition = { x: 0, y: 0 };
   public static mouseFlag = false;
 
   // 初期化
@@ -74,7 +75,7 @@ export default class Renderer {
 
     // Simulation
     // 外力
-    ExternalForce.update(gl, canvas, Renderer.mousePosition, Renderer.mouseFlag);
+    ExternalForce.update(gl, canvas, Renderer.mousePosition, Renderer.mouseDiff);
     // 移流
     if (!ExternalForce.fbo) { return }
     Advection.update(gl, canvas, ExternalForce.fbo);
@@ -102,6 +103,11 @@ export default class Renderer {
         x: e.offsetX / Renderer.canvas.width * 2 - 1,
         y: e.offsetY / Renderer.canvas.height * -2 + 1,
     }
+    Renderer.mouseDiff = {
+      x: Renderer.mousePosition.x - Renderer.preMousePosition.x,
+      y: Renderer.mousePosition.y - Renderer.preMousePosition.y,
+    }
+    console.log(Renderer.mouseDiff)
   }
 
   private static mousedown(e: MouseEvent) {
