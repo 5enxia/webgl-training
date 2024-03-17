@@ -57,7 +57,6 @@ export default class ExternalForce {
     // VBO Array
     ExternalForce.VBOArray = [
       WebGL.createVBO(gl, ExternalForce.position),
-      WebGL.createVBO(gl, ExternalForce.velocity),
     ]
 
     ExternalForce.fbo = WebGL.createFramebuffer(gl, 512, 512);

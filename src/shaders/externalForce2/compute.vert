@@ -1,7 +1,6 @@
 #version 300 es
 precision highp float;
 layout(location = 0) in vec2 position;
-layout(location = 1) in vec2 velocity;
 
 uniform vec2 mouse; // -1.0 ~ 1.0
 uniform float force; // -1.0 ~ 1.0
