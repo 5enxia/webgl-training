@@ -60,18 +60,15 @@ export default class ExternalForce {
       WebGL.createVBO(gl, ExternalForce.velocity),
     ]
 
-    // ExternalForce.fbo = WebGL.createFramebuffer(gl, 512, 512);
+    ExternalForce.fbo = WebGL.createFramebuffer(gl, 512, 512);
   }
 
   // uniform 変数などを設定して描画処理を行い VBO に書き込む
   public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement,mousePosition: MousePosition, mouseFlag: boolean) {
+    gl.useProgram(ExternalForce.prg);
 
-
-    // 使用するフレームバッファをバインドする
-    // if (!ExternalForce.fbo) return;
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, ExternalForce.fbo.frameBuffer);
-    // gl.bindTexture(gl.TEXTURE_2D, ExternalForce.fbo.fTexture);
-
+    if (!ExternalForce.fbo) return;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, ExternalForce.fbo.frameBuffer);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
@@ -79,7 +76,6 @@ export default class ExternalForce {
     gl.viewport(0, 0, canvas.width, canvas.height);
 
 
-    gl.useProgram(ExternalForce.prg);
     WebGL.setAttributes(gl, ExternalForce.VBOArray, ExternalForce.attLocation, ExternalForce.attStride);
 
     gl.uniform2fv(ExternalForce.uniLocation[0], [mousePosition.x, mousePosition.y]);
@@ -87,7 +83,6 @@ export default class ExternalForce {
     gl.drawArrays(gl.POINTS, 0, ExternalForce.resolutionX * ExternalForce.resolutionY);
 
     // フレームバッファのバインドを解除
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.flush()
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 }

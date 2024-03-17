@@ -37,7 +37,6 @@ export default class Output {
     Output.attStride = [2]
 
     // uniform
-    gl.activeTexture(gl.TEXTURE0);
     Output.uniLocation = [
       gl.getUniformLocation(prg, 'velocity'), // texture
     ];
@@ -59,17 +58,22 @@ export default class Output {
   }
 
   public static draw(gl: WebGL2RenderingContext, texture: WebGLTexture | null) {
+    gl.useProgram(Output.prg);
+    
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
     // Clear
+
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.viewport(0, 0, 512, 512);
 
-    gl.useProgram(Output.prg);
-
     WebGL.setAttributes(gl, Output.VBOArray, Output.attLocation, Output.attStride);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.uniform1i(Output.uniLocation[0], 0);
     gl.drawArrays(gl.POINTS, 0, Output.resolutionX * Output.resolutionY);
+    
+    gl.flush();
   }
 }

@@ -291,7 +291,8 @@ export default class WebGL {
       height,
       0,
       gl.RGBA,
-      gl.FLOAT,
+      // gl.FLOAT,
+      gl.UNSIGNED_BYTE,
       null
     );
 
