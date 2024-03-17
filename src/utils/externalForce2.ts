@@ -36,8 +36,9 @@ export default class ExternalForce {
     if (!cprg) return;
     ExternalForce.prg = cprg;
 
-    ExternalForce.attLocation = [0, 1];
-    ExternalForce.attStride = [2, 2]
+    ExternalForce.attLocation = [0];
+    ExternalForce.attStride = [2]
+
     ExternalForce.uniLocation = [
       gl.getUniformLocation(cprg, 'mouse'),
       gl.getUniformLocation(cprg, 'force'),
@@ -50,7 +51,6 @@ export default class ExternalForce {
         let y = j * ExternalForce.intervalY * 2.0 - 1.0;
 
         ExternalForce.position.push(x, -y); // 頂点の座標
-        ExternalForce.velocity.push(0.0, 0.0); // 頂点の速度ベクトル
       }
     }
 
