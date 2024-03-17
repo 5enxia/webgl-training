@@ -107,6 +107,26 @@ export default class WebGL {
     }
   }
 
+  public static createProgramFromSource(
+    gl: WebGL2RenderingContext,
+    vert: string,
+    frag: string
+  ): WebGLProgram | null {
+    var vs = WebGL.createShaderFromSource(gl, vert, "vert");
+    var fs = WebGL.createShaderFromSource(gl, frag, "frag");
+    if (!vs || !fs) return null;
+    var prg = WebGL.createProgram(gl, vs, fs);
+    if (!prg) return null;
+    return prg;
+  }
+
+  public static clear(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement) {
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearDepth(1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
   public static createTransformFeedbackProgram(
     gl: WebGL2RenderingContext,
     vs: WebGLShader,
