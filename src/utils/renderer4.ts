@@ -34,16 +34,6 @@ export default class Renderer {
     if (!gl) return;
     Renderer.gl = gl;
 
-    // float texture を有効化
-    var ext;
-    ext = gl.getExtension('EXT_color_buffer_float');
-    if(ext == null){
-        alert('float texture not supported');
-        return;
-    } else {
-      console.log('float texture supported');
-    }
-
     // Flags
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
@@ -58,6 +48,8 @@ export default class Renderer {
     // Simulation
     // 外力
     ExternalForce.init(gl);
+
+    // 描画
     Output.init(gl);
 
     // Time
@@ -93,11 +85,8 @@ export default class Renderer {
     const gl = Renderer.gl;
 
     // Simulation
-    // 外力
     if (!ExternalForce.fbo) { return }
     Output.draw(gl, ExternalForce.fbo.fTexture);
-
-    // gl.flush();
   }
 
   private static mousemove(e: MouseEvent) {
