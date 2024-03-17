@@ -32,7 +32,12 @@ export default class Renderer {
     // Context
     Renderer.canvas = canvas;
     const gl = WebGL.createContext(canvas);
+    // gl.Floatを有効化
     if (!gl) return;
+      // float texture を有効化 (webgl2)
+    if (!gl.getExtension("EXT_color_buffer_float")) {
+      alert("float texture not supported");
+    }
     Renderer.gl = gl;
 
     // Flags
@@ -96,7 +101,6 @@ export default class Renderer {
       x: Renderer.mousePosition.x - Renderer.preMousePosition.x,
       y: Renderer.mousePosition.y - Renderer.preMousePosition.y,
     }
-    console.log(Renderer.mouseDiff)
   }
 
   private static mousedown(e: MouseEvent) {

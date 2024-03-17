@@ -17,6 +17,7 @@ export default class WebGL {
   public static createContext(
     canvas: HTMLCanvasElement
   ): WebGL2RenderingContext | null {
+    // const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
     const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
@@ -306,13 +307,13 @@ export default class WebGL {
     gl.texImage2D(
       gl.TEXTURE_2D,
       0,
-      gl.RGBA,
+      gl.RGBA32F,
       width,
       height,
       0,
       gl.RGBA,
-      // gl.FLOAT,
-      gl.UNSIGNED_BYTE,
+      gl.FLOAT,
+      // gl.UNSIGNED_BYTE,
       null
     );
 
