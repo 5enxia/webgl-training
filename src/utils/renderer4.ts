@@ -38,7 +38,6 @@ export default class Renderer {
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
-    // gl.disable(gl.RASTERIZER_DISCARD);
 
     // Events
     canvas.addEventListener("mousemove", Renderer.mousemove);
