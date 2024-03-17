@@ -1,4 +1,4 @@
-import WebGL from "./webgl";
+import WebGL, { FboObject } from "./webgl";
 
 import vert from "../shaders/output/shader.vert?raw"
 import frag from "../shaders/output/shader.frag?raw"
@@ -57,11 +57,11 @@ export default class Output {
     ]
   }
 
-  public static draw(gl: WebGL2RenderingContext, texture: WebGLTexture | null) {
+  public static draw(gl: WebGL2RenderingContext, fbo: FboObject) {
     gl.useProgram(Output.prg);
     
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.bindTexture(gl.TEXTURE_2D, fbo.fTexture);
 
     // Clear
 

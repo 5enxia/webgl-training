@@ -85,7 +85,7 @@ export default class Renderer {
 
     // Simulation
     if (!ExternalForce.fbo) { return }
-    Output.draw(gl, ExternalForce.fbo.fTexture);
+    Output.draw(gl, ExternalForce.fbo);
   }
 
   private static mousemove(e: MouseEvent) {
