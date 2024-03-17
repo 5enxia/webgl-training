@@ -1,4 +1,4 @@
-interface FboObject {
+export interface FboObject {
   frameBuffer: WebGLFramebuffer;
   depthRenderBuffer: WebGLRenderbuffer;
   fTexture: WebGLTexture;

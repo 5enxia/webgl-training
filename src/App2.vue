@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import WebGL from './utils/webgl';
-import Renderer from './utils/renderer3';
+import Renderer from './utils/renderer4';
 
 onMounted(() => {
   const canvas = WebGL.getCanvas('canvas');
