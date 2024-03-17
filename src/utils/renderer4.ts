@@ -2,6 +2,7 @@ import WebGL from "./webgl";
 
 import ExternalForce from "./externalForce2";
 import Output from "./output";
+import Advection from "./advection";
 
 export interface MousePosition {
   x: number;
@@ -17,7 +18,7 @@ export default class Renderer {
 
   // params
   public static startTime: number = 0;
-  public static FPS = 10;
+  public static FPS = 30;
   public static time = 0;
   public static counter = 0;
 
@@ -47,6 +48,8 @@ export default class Renderer {
     // Simulation
     // 外力
     ExternalForce.init(gl);
+    // 移流
+    Advection.init(gl);
 
     // 描画
     Output.init(gl);
@@ -72,6 +75,9 @@ export default class Renderer {
     // Simulation
     // 外力
     ExternalForce.update(gl, canvas, Renderer.mousePosition, Renderer.mouseFlag);
+    // 移流
+    if (!ExternalForce.fbo) { return }
+    Advection.update(gl, canvas, ExternalForce.fbo);
 
     // Counter
     Renderer.counter++;
@@ -84,8 +90,9 @@ export default class Renderer {
     const gl = Renderer.gl;
 
     // Simulation
-    if (!ExternalForce.fbo) { return }
-    Output.draw(gl, ExternalForce.fbo);
+    // if (!ExternalForce.fbo) { return }
+    if (!Advection.fbo) { return }
+    Output.draw(gl, Advection.fbo);
   }
 
   private static mousemove(e: MouseEvent) {
