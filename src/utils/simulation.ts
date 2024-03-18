@@ -1,4 +1,5 @@
 import Advection from "./advection2";
+import Divergence from "./divergence";
 import ExternalForce from "./externalForce3";
 import { MousePosition } from "./renderer5";
 import WebGL, { FboObject } from "./webgl";
@@ -28,6 +29,7 @@ export default class Simulation {
   // fbo
   public static vel0: FboObject | null
   public static vel1: FboObject | null
+  public static div: FboObject | null
 
   public static init(gl: WebGL2RenderingContext) {
     for (let i = 0; i < Simulation.resolution.x; i++) {
@@ -42,16 +44,17 @@ export default class Simulation {
 
     Simulation.vel0 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
     Simulation.vel1 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
+    Simulation.div = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
 
-    if (!Simulation.vel0 || !Simulation.vel1) return
+    if (!Simulation.vel0 || !Simulation.vel1 || !Simulation.div) return
     Advection.init(gl, this.position, Simulation.vel0, Simulation.vel1)
     ExternalForce.init(gl, Simulation.position, Simulation.resolution, Simulation.vel1, Simulation.vel0)
-    // swap vel0, vel1
-
+    // Divergence.init(gl, this.position, Simulation.vel0, Simulation.div)
   }
 
   public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, mousePosition: MousePosition, mouseDiff: MousePosition) {
     Advection.update(gl, canvas)
     ExternalForce.update(gl, canvas, mousePosition, mouseDiff);
+    // Divergence.update(gl, canvas)
   }
 }
