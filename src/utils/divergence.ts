@@ -34,6 +34,11 @@ export default class Divergence extends Compute {
       WebGL.createVBO(gl, position),
     ]
 
+    // IBO Array
+    Divergence.IBOArray = [
+      WebGL.createIBO(gl, [0, 2, 1, 1, 2, 3]),
+    ]
+
     Divergence.src = src
     Divergence.out = out
   }
@@ -52,9 +57,10 @@ export default class Divergence extends Compute {
     gl.bindFramebuffer(gl.FRAMEBUFFER, Divergence.out.frameBuffer);
 
     WebGL.setAttributes(gl, Divergence.VBOArray, Divergence.attLocation, Divergence.attStride);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Divergence.IBOArray[0]);
     gl.uniform1i(Divergence.uniLocation[0], 0); // uniform texture
-    gl.uniform1f(Divergence.uniLocation[1], 1 / 30); // uniform texture
-    gl.drawArrays(gl.POINTS, 0, Divergence.resolution.x * Divergence.resolution.y);
+    gl.uniform1f(Divergence.uniLocation[1], 1 / 60); // uniform texture
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
     // フレームバッファのバインドを解除
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
