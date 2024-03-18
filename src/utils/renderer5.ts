@@ -86,7 +86,7 @@ export default class Renderer {
 
   private static draw() {
     const gl = Renderer.gl;
-    if (!Simulation.vel0) return
+    if (!Simulation.vel0 || !Simulation.vel1 || !Simulation.vel2) return
     Output.draw(gl, Simulation.vel0);
   }
 
