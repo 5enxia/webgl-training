@@ -1,4 +1,4 @@
-import Advection from "./advection";
+import Advection from "./advection2";
 import ExternalForce from "./externalForce3";
 import { MousePosition } from "./renderer5";
 import WebGL, { FboObject } from "./webgl";
@@ -44,7 +44,7 @@ export default class Simulation {
     Simulation.vel1 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
 
     if (!Simulation.vel0 || !Simulation.vel1) return
-    Advection.init(gl, Simulation.vel0, Simulation.vel1)
+    Advection.init(gl, this.position, Simulation.vel0, Simulation.vel1)
     ExternalForce.init(gl, Simulation.position, Simulation.resolution, Simulation.vel1, Simulation.vel0)
     // swap vel0, vel1
 
