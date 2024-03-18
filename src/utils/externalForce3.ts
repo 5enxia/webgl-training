@@ -27,6 +27,7 @@ export default class ExternalForce extends Compute {
     ExternalForce.uniLocation = [
       gl.getUniformLocation(ExternalForce.prg, 'mouse'),
       gl.getUniformLocation(ExternalForce.prg, 'force'),
+      gl.getUniformLocation(ExternalForce.prg, 'velocity'),
     ];
 
     // VBO
@@ -43,6 +44,10 @@ export default class ExternalForce extends Compute {
     // シェーダーを設定
     gl.useProgram(ExternalForce.prg);
 
+    // テクスチャのバインド
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, fbo.fTexture);
+
     // フレームバッファのバインド
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo.frameBuffer);
 
@@ -52,6 +57,7 @@ export default class ExternalForce extends Compute {
     // uniform
     gl.uniform2fv(ExternalForce.uniLocation[0], [mousePosition.x, mousePosition.y]);
     gl.uniform2fv(ExternalForce.uniLocation[1], [mouseDiff.x, mouseDiff.y]);
+    gl.uniform1i(ExternalForce.uniLocation[2], 0); // uniform texture
 
     // draw
     gl.drawArrays(gl.POINTS, 0, ExternalForce.resolution.x * ExternalForce.resolution.y);
