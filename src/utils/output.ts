@@ -18,6 +18,9 @@ export default class Output {
   // VBO Array
   public static VBOArray: Array<WebGLBuffer | null>
 
+  // IBO Array
+  public static IBOArray: Array<WebGLBuffer | null>
+
   // Shader
   private static prg: WebGLProgram;
   public static attLocation: Array<number> = [];
@@ -41,19 +44,21 @@ export default class Output {
       gl.getUniformLocation(prg, 'velocity'), // texture
     ];
 
-    for (let i = 0; i < Output.resolutionX; i++) {
-      for (let j = 0; j < Output.resolutionY; j++) {
-        // 頂点の座標
-        let x = i * Output.intervalX * 2.0 - 1.0;
-        let y = j * Output.intervalY * 2.0 - 1.0;
-
-        Output.position.push(x, -y); // 頂点の座標
-      }
-    }
+    Output.position = [
+      -1.0, 1.0,
+      1.0, 1.0,
+      -1.0, -1.0,
+      1.0, -1.0,
+    ]
 
     // VBO Array
     Output.VBOArray = [
       WebGL.createVBO(gl, Output.position),
+    ]
+
+    // IBO Array
+    Output.IBOArray = [
+      WebGL.createIBO(gl, [0, 2, 1, 1, 2, 3]),
     ]
   }
 
@@ -71,8 +76,11 @@ export default class Output {
     gl.viewport(0, 0, 512, 512);
 
     WebGL.setAttributes(gl, Output.VBOArray, Output.attLocation, Output.attStride);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Output.IBOArray[0]);
+
     gl.uniform1i(Output.uniLocation[0], 0);
-    gl.drawArrays(gl.POINTS, 0, Output.resolutionX * Output.resolutionY);
+    // gl.drawArrays(gl.POINTS, 0, Output.resolutionX * Output.resolutionY);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     
     gl.flush();
   }

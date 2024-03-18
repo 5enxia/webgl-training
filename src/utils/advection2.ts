@@ -34,6 +34,11 @@ export default class Advection extends Compute {
       WebGL.createVBO(gl, position),
     ]
 
+    // IBO Array
+    Advection.IBOArray = [
+      WebGL.createIBO(gl, [0, 2, 1, 1, 2, 3]),
+    ]
+
     Advection.src = src
     Advection.out = out
   }
@@ -52,9 +57,11 @@ export default class Advection extends Compute {
     gl.bindFramebuffer(gl.FRAMEBUFFER, Advection.out.frameBuffer);
 
     WebGL.setAttributes(gl, Advection.VBOArray, Advection.attLocation, Advection.attStride);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Advection.IBOArray[0]);
+
     gl.uniform1i(Advection.uniLocation[0], 0); // uniform texture
-    gl.uniform1f(Advection.uniLocation[1], 1 / 30); // uniform texture
-    gl.drawArrays(gl.POINTS, 0, Advection.resolution.x * Advection.resolution.y);
+    gl.uniform1f(Advection.uniLocation[1], 1 / 60); // uniform texture
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
     // フレームバッファのバインドを解除
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);

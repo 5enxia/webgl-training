@@ -32,15 +32,21 @@ export default class Simulation {
   public static div: FboObject | null
 
   public static init(gl: WebGL2RenderingContext) {
-    for (let i = 0; i < Simulation.resolution.x; i++) {
-      for (let j = 0; j < Simulation.resolution.y; j++) {
-        // 頂点の座標
-        let x = i * Simulation.interval.x * 2.0 - 1.0;
-        let y = j * Simulation.interval.y * 2.0 - 1.0;
+    // for (let i = 0; i < Simulation.resolution.x; i++) {
+    //   for (let j = 0; j < Simulation.resolution.y; j++) {
+    //     // 頂点の座標
+    //     let x = i * Simulation.interval.x * 2.0 - 1.0;
+    //     let y = j * Simulation.interval.y * 2.0 - 1.0;
 
-        Simulation.position.push(x, -y); // 頂点の座標
-      }
-    }
+    //     Simulation.position.push(x, -y); // 頂点の座標
+    //   }
+    // }
+    Simulation.position = [
+      -1.0, 1.0,
+      1.0, 1.0,
+      -1.0, -1.0,
+      1.0, -1.0,
+    ]
 
     Simulation.vel0 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
     Simulation.vel1 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
@@ -49,12 +55,12 @@ export default class Simulation {
     if (!Simulation.vel0 || !Simulation.vel1 || !Simulation.div) return
     Advection.init(gl, this.position, Simulation.vel0, Simulation.vel1)
     ExternalForce.init(gl, Simulation.position, Simulation.resolution, Simulation.vel1, Simulation.vel0)
-    // Divergence.init(gl, this.position, Simulation.vel0, Simulation.div)
+    Divergence.init(gl, this.position, Simulation.vel0, Simulation.div)
   }
 
   public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, mousePosition: MousePosition, mouseDiff: MousePosition) {
     Advection.update(gl, canvas)
     ExternalForce.update(gl, canvas, mousePosition, mouseDiff);
-    // Divergence.update(gl, canvas)
+    Divergence.update(gl, canvas)
   }
 }

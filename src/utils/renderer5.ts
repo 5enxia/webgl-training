@@ -75,7 +75,7 @@ export default class Renderer {
     const gl = Renderer.gl;
 
     // Simulation
-    Simulation.update(gl, canvas, this.mousePosition, this.mouseDiff)
+    Simulation.update(gl, canvas, this.mousePosition, this.mouseFlag ? this.mouseDiff: {x: 0, y: 0})
 
     // Counter
     Renderer.counter++;

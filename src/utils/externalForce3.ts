@@ -40,6 +40,11 @@ export default class ExternalForce extends Compute {
       WebGL.createVBO(gl, position),
     ]
 
+    // IBO
+    ExternalForce.IBOArray = [
+      WebGL.createIBO(gl, [0, 2, 1, 1, 2, 3]),
+    ]
+
     // FBO
     ExternalForce.src = src
     ExternalForce.out = out
@@ -61,6 +66,7 @@ export default class ExternalForce extends Compute {
 
     // attribute
     WebGL.setAttributes(gl, ExternalForce.VBOArray, ExternalForce.attLocation, ExternalForce.attStride);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ExternalForce.IBOArray[0]);
 
     // uniform
     gl.uniform2fv(ExternalForce.uniLocation[0], [mousePosition.x, mousePosition.y]);
@@ -68,7 +74,7 @@ export default class ExternalForce extends Compute {
     gl.uniform1i(ExternalForce.uniLocation[2], 0); // uniform texture
 
     // draw
-    gl.drawArrays(gl.POINTS, 0, ExternalForce.resolution.x * ExternalForce.resolution.y);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
     // フレームバッファのバインドを解除
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
