@@ -14,7 +14,11 @@ export default class ExternalForce extends Compute {
   // VBO生成
   public static velocity: number[] = []; // 頂点のベクトル
 
-  public static init(gl: WebGL2RenderingContext, position: number[], resolution: Resolution) {
+  // FBO
+  public static src: FboObject;
+  public static out: FboObject;
+
+  public static init(gl: WebGL2RenderingContext, position: number[], resolution: Resolution, src: FboObject, out: FboObject) {
     let prg = WebGL.createProgramFromSource(gl, vert, frag);
     if (!prg) return;
     ExternalForce.prg = prg;
@@ -35,10 +39,14 @@ export default class ExternalForce extends Compute {
     ExternalForce.VBOArray = [
       WebGL.createVBO(gl, position),
     ]
+
+    // FBO
+    ExternalForce.src = src
+    ExternalForce.out = out
   }
 
   // uniform 変数などを設定して描画処理を行い VBO に書き込む
-  public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, mousePosition: MousePosition, mouseDiff: MousePosition, fbo: FboObject) {
+  public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, mousePosition: MousePosition, mouseDiff: MousePosition) {
     WebGL.clear(gl, canvas)
 
     // シェーダーを設定
@@ -46,10 +54,10 @@ export default class ExternalForce extends Compute {
 
     // テクスチャのバインド
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, fbo.fTexture);
+    gl.bindTexture(gl.TEXTURE_2D, ExternalForce.src.fTexture);
 
     // フレームバッファのバインド
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo.frameBuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, ExternalForce.out.frameBuffer);
 
     // attribute
     WebGL.setAttributes(gl, ExternalForce.VBOArray, ExternalForce.attLocation, ExternalForce.attStride);

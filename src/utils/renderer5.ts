@@ -86,8 +86,8 @@ export default class Renderer {
 
   private static draw() {
     const gl = Renderer.gl;
-    if (!Simulation.externalforce0) return
-    Output.draw(gl, Simulation.externalforce0);
+    if (!Simulation.vel0) return
+    Output.draw(gl, Simulation.vel0);
   }
 
   private static mousemove(e: MouseEvent) {

@@ -26,8 +26,8 @@ export default class Simulation {
   }; // 頂点間の間隔
 
   // fbo
-  public static externalforce0: FboObject | null
-  public static advection0: FboObject | null
+  public static vel0: FboObject | null
+  public static vel1: FboObject | null
 
   public static init(gl: WebGL2RenderingContext) {
     for (let i = 0; i < Simulation.resolution.x; i++) {
@@ -40,17 +40,18 @@ export default class Simulation {
       }
     }
 
-    Simulation.externalforce0 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
-    Simulation.advection0 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
+    Simulation.vel0 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
+    Simulation.vel1 = WebGL.createFramebuffer(gl, this.resolution.x, this.resolution.y)
 
-    ExternalForce.init(gl, Simulation.position, Simulation.resolution)
-    Advection.init(gl)
+    if (!Simulation.vel0 || !Simulation.vel1) return
+    Advection.init(gl, Simulation.vel0, Simulation.vel1)
+    ExternalForce.init(gl, Simulation.position, Simulation.resolution, Simulation.vel1, Simulation.vel0)
+    // swap vel0, vel1
+
   }
 
   public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, mousePosition: MousePosition, mouseDiff: MousePosition) {
-    if (!Simulation.externalforce0) return
-    ExternalForce.update(gl, canvas, mousePosition, mouseDiff, Simulation.externalforce0);
-    if (!Simulation.advection0) return
-    Advection.update(gl, canvas, Simulation.externalforce0)
+    Advection.update(gl, canvas)
+    ExternalForce.update(gl, canvas, mousePosition, mouseDiff);
   }
 }

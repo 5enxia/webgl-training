@@ -25,9 +25,10 @@ export default class Advection {
   public static uniLocation: Array<WebGLUniformLocation | null> = [];
 
   // FBO
-  public static fbo: FboObject | null;
+  public static src: FboObject;
+  public static out: FboObject;
 
-  public static init(gl: WebGL2RenderingContext) {
+  public static init(gl: WebGL2RenderingContext, src: FboObject, out: FboObject) {
     var vs = WebGL.createShaderFromSource(gl, cvert, "vert");
     var fs = WebGL.createShaderFromSource(gl, cfrag, "frag");
     if (!vs || !fs) return;
@@ -58,20 +59,20 @@ export default class Advection {
       WebGL.createVBO(gl, Advection.position),
     ]
 
-    Advection.fbo = WebGL.createFramebuffer(gl, 512, 512);
+    Advection.src = src
+    Advection.out = out
   }
 
   // uniform 変数などを設定して描画処理を行い VBO に書き込む
-  public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement, fbo: FboObject) {
+  public static update(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement) {
     gl.useProgram(Advection.prg);
 
     // テクスチャのバインド
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, fbo.fTexture);
+    gl.bindTexture(gl.TEXTURE_2D, Advection.src.fTexture);
 
     // フレームバッファのバインド
-    if (!Advection.fbo) return;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, Advection.fbo.frameBuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, Advection.out.frameBuffer);
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
